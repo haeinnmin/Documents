@@ -6,7 +6,6 @@
   - [서문](#%EC%84%9C%EB%AC%B8)
     - [이 매뉴얼에 대하여](#%EC%9D%B4-%EB%A7%A4%EB%89%B4%EC%96%BC%EC%97%90-%EB%8C%80%ED%95%98%EC%97%AC)
   - [3.데이터 딕셔너리](#3%EB%8D%B0%EC%9D%B4%ED%84%B0-%EB%94%95%EC%85%94%EB%84%88%EB%A6%AC)
-    
     - [메타 테이블](#%EB%A9%94%ED%83%80-%ED%85%8C%EC%9D%B4%EB%B8%94)
     - [SYS_AUDIT_](#sys_audit_)
     - [SYS_AUDIT_OPTS_](#sys_audit_opts_)
@@ -50,6 +49,8 @@
     - [SYS_REPL_HOSTS_](#sys_repl_hosts_)
     - [SYS_REPL_ITEMS_](#sys_repl_items_)
     - [SYS_REPL_OFFLINE_DIR_](#sys_repl_offline_dir_)
+    - [SYS_REPL_OLD_CHECKS_](#sys_repl_old_checks_)
+    - [SYS_REPL_OLD_CHECK_COLUMNS_](#sys_repl_old_check_columns_)
     - [SYS_REPL_OLD_COLUMNS_](#sys_repl_old_columns_)
     - [SYS_REPL_OLD_INDEX_COLUMNS_](#sys_repl_old_index_columns_)
     - [SYS_REPL_OLD_INDICES_](#sys_repl_old_indices_)
@@ -114,7 +115,6 @@
     - [V$INDEX](#vindex)
     - [V$INSTANCE](#vinstance)
     - [V$INTERNAL_SESSION](#vinternal_session)
-    
     - [V$LATCH](#vlatch)
     - [V$LIBRARY](#vlibrary)
     - [V$LFG](#vlfg)
@@ -141,7 +141,7 @@
     - [V$PROCINFO](#vprocinfo)
     - [V$PROCTEXT](#vproctext)
     - [V$PROPERTY](#vproperty)
-    - [V\$QUEUE_DELETE_OFF](#vqueue_delete_off)
+    - [V$QUEUE_DELETE_OFF](#vqueue_delete_off)
     - [V$REPEXEC](#vrepexec)
     - [V$REPGAP](#vrepgap)
     - [V$REPGAP_PARALLEL](#vrepgap_parallel)
@@ -843,7 +843,7 @@ SYS_COLUMNS_
 | REFERENCED_TABLE_ID | INTEGER       | FOREIGN KEY 제약조건으로 참조하는 테이블의 식별자            |
 | REFERENCED_INDEX_ID | INTEGER       | FOREIGN KEY 제약조건으로 참조하는 인덱스의 식별자            |
 | DELETE_RULE         | INTEGER       | FOREIGN KEY 제약조건을 위한 삭제 규칙 0: 종속적으로 삭제하지 않음 1: 종속적으로 삭제 2: SET NULL, 외래 키 관계에 의해 종속되는 칼럼 값을 NULL로 변경 |
-| CHECK_CONDITION     | VARCHAR(4000) | Check 제약조건의 조건 문자열                                 |
+| CHECK_CONDITION     | VARCHAR(4000) | CHECK 제약조건의 조건 문자열                                 |
 | VALIDATED           | CHAR(1)       | 모든 데이터가 제약조건을 따르는지 여부                       |
 
 #### 칼럼 정보
@@ -896,7 +896,7 @@ UNIQUE 또는 PRIMARY KEY 제약 조건과 같이 제약조건을 정의하기 �
 
 ##### CHECK_CONDITION
 
-사용자가 Check 제약조건을 지정할 때 정의한 무결성 규칙(Integrity Rule)을 나타낸다.
+사용자가 CHECK 제약조건을 지정할 때 정의한 무결성 규칙(Integrity Rule)을 나타낸다.
 
 ##### VALIDATED
 
@@ -2661,7 +2661,7 @@ OPTIONS
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### HOST_IP
 
@@ -2714,7 +2714,7 @@ SYS_REPLICATIONS_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### TABLE_OID
 
@@ -2781,7 +2781,7 @@ SYS_TABLES_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름이다. SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### LFG_ID
 
@@ -2790,6 +2790,96 @@ SYS_TABLES_
 ##### PATH
 
 로그 파일이 저장되는 시스템 내의 절대 경로를 나타낸다.
+
+### SYS_REPL_OLD_CHECKS_
+
+이중화 송신 쓰레드가 복제중인 이중화 대상 칼럼 중 CHECK 제약조건에 대한 정보를 가진 메타 테이블이다.
+
+| Column name      | Type          | Description                  |
+| ---------------- | ------------- | ---------------------------- |
+| REPLICATION_NAME | VARCHAR(40)   | 이중화 이름                  |
+| TABLE_OID        | BIGINT        | 테이블 객체 식별자           |
+| CONSTRAINT_ID    | INTEGER       | CHECK 제약조건 식별자        |
+| CHECK_NAME       | VARCHAR(40)   | CHECK 제약조건 이름          |
+| CONDITION        | VARCHAR(4000) | CHECK 제약조건의 조건 문자열 |
+
+#### 칼럼 정보
+
+##### REPLICATION_NAME
+
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
+
+##### TABLE_OID
+
+이중화 송신 쓰레드가 처리 중인 테이블 객체 식별자이다. 이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 이 테이블이 존재하지 않는다면 SYS_TABLES_ 메타 테이블에서 조회할 수 없다.
+
+##### CONSTRAINT_ID
+
+이중화 송신 쓰레드가 처리 중인 CHECK 제약조건 식별자로 SYS_CONSTRAINTS_ 메타 테이블에서 같은 컬럼으로 확인할 수 있다.
+
+이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 해당 CHECK 제약조건이 삭제된 경우 SYS_CONSTRAINTS_에서 조회할 수 없다.
+
+##### CHECK_NAME
+
+이중화 송신 쓰레드가 현재 사용중인 CHECK 제약조건 이름으로 SYS_CONSTRAINTS_ 메타 테이블의 CONSTRAINT_NAME과 일치한다.
+
+이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 해당 CHECK 제약조건이 삭제된 경우 SYS_CONSTRAINTS_에서 조회할 수 없다.
+
+##### CONDITION
+
+이중화 송신 쓰레드가 현재 사용중인 CHECK 제약조건의 조건 문자열로 SYS_CONSTRAINTS_ 메타 테이블의 CHECK_CONDITION과 일치한다.
+
+이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 해당 CHECK 제약조건이 삭제된 경우 SYS_CONSTRAINTS_에서 조회할 수 없다.
+
+#### 참조 테이블
+
+```
+SYS_REPLICATIONS_ 
+SYS_TABLES_
+SYS_CONSTRAINTS_
+```
+
+### SYS_REPL_OLD_CHECK_COLUMNS_
+
+이중화 송신 쓰레드가 복제 중인 이중화 대상 칼럼에 설정된 CHECK 제약조건에 대한 정보를 가진 메타 테이블이다.
+
+| Column name      | Type        | Description                       |
+| ---------------- | ----------- | --------------------------------- |
+| REPLICATION_NAME | VARCHAR(40) | 이중화 이름                       |
+| TABLE_OID        | BIGINT      | 테이블 객체 식별자                |
+| CONSTRAINT_ID    | INTEGER     | CHECK 제약조건 식별자             |
+| COLUMN_ID        | INTEGER     | CHECK 제약조건을 갖는 칼럼 식별자 |
+
+#### 칼럼 정보
+
+##### REPLICATION_NAME
+
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
+
+##### TABLE_OID
+
+이중화 송신 쓰레드가 처리 중인 테이블 객체 식별자이다. 이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 이 테이블이 존재하지 않는다면 SYS_TABLES_ 메타 테이블에서 조회할 수 없다.
+
+##### CONSTRAINT_ID
+
+이중화 송신 쓰레드가 처리 중인 CHECK 제약조건 식별자로 SYS_CONSTRAINTS_ 메타 테이블의 CONSTRAINT_ID와 일치한다.
+
+이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 해당 CHECK 제약조건이 삭제된 경우 SYS_CONSTRAINTS_에서 조회할 수 없다.
+
+##### COLUMN_ID
+
+이중화 송신 쓰레드가 처리 중인 CHECK 제약조건을 갖는 칼럼 식별자로 SYS_COLUMNS_ 메타 테이블의 COLUMN_ID와 일치한다.
+
+이중화 송신 쓰레드가 이중화 로그를 처리 중인 시점에 해당 CHECK 제약조건이 삭제된 경우 SYS_COLUMNS_ 에서 조회할 수 없다.
+
+#### 참조 테이블
+
+```
+SYS_REPLICATIONS_ 
+SYS_TABLES_
+SYS_CONSTRAINTS_
+SYS_COLUMNS_
+```
 
 ### SYS_REPL_OLD_COLUMNS_
 
@@ -2822,7 +2912,7 @@ SYS_TABLES_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름이다. SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### TABLE_OID
 
@@ -2925,7 +3015,7 @@ SYS_REPL_OLD_INDEX_COLUMNS_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### TABLE_OID
 
@@ -2974,7 +3064,7 @@ SYS_REPL_OLD_INDICES_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### TABLE_OID
 
@@ -3036,7 +3126,7 @@ SYS_REPL_OLD_INDEX_COLUMNS_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### TABLE_OID
 
@@ -3108,7 +3198,7 @@ SYS_REPL_OLD_INDEX_COLUMNS_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### OLD_TABLE_OID
 
@@ -3134,7 +3224,7 @@ SYS_REPL_OLD_INDEX_COLUMNS_
 
 ##### REPLICATION_NAME
 
-사용자가 명시한 이중화 이름으로, SYS_REPLICATIONS_ 메타 테이블의 한 REPLICATION_NAME 값과 동일하다.
+사용자가 명시한 이중화 이름으로 SYS_REPLICATIONS_ 메타 테이블에서도 확인할 수 있다.
 
 ##### MASTER_BEGIN_SN
 
@@ -8956,7 +9046,7 @@ Altibase 서버가 내부적으로 사용하는 플래그이다.
 | CONSTRAINT_ID    | INTEGER       | 제약조건 식별자              |
 | CONSTRAINT_NAME  | VARCHAR(128)  | 제약조건 이름                |
 | COLUMN_CNT       | INTEGER       | 제약조건에 관련된 칼럼 개수  |
-| CHECK_CONDITION  | VARCHAR(4000) | Check 제약조건의 조건 문자열 |
+| CHECK_CONDITION  | VARCHAR(4000) | CHECK 제약조건의 조건 문자열 |
 
 #### 칼럼 정보
 
@@ -8982,7 +9072,7 @@ Altibase 서버가 내부적으로 사용하는 플래그이다.
 
 ##### CHECK_CONDITION
 
-사용자가 Check 제약조건을 지정할 때 정의한 무결성 규칙(Integrity Rule)을 나타낸다.
+사용자가 CHECK 제약조건을 지정할 때 정의한 무결성 규칙(Integrity Rule)을 나타낸다.
 
 ### V$RESERVED_WORDS
 

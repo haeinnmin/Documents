@@ -3493,16 +3493,16 @@ ALTER TABLE 구문으로 파티션드 테이블(partitioned table)의 속성을 
 아래 표는 각 구문을 범위, 해시, 리스트 파티션드 테이블에 사용할 수 있는지 여부를
 나타낸다.
 
-|                     | 범위 파티션드 테이블 | 리스트 파티션드 테이블 | 해시 파티션드 테이블 |
-| ------------------- | -------------------- | ---------------------- | -------------------- |
-| 테이블스페이스 변경 | ○                    | ○                      | ○                    |
-| 추가                | X                    | X                      | ○                    |
-| 병합                | X                    | X                      | ○                    |
-| 삭제                | ○                    | ○                      | X                    |
-| 합병                | ○                    | ○                      | X                    |
-| 이름 변경           | ○                    | ○                      | ○                    |
-| 분할                | ○                    | ○                      | X                    |
-| 레코드 삭제         | ○                    | ○                      | ○                    |
+|                     | 범위 파티셔닝으로 생성된 파티션 | 리스트 파티셔닝으로 생성된 파티션 | 해시 파티셔닝으로 생성된 파티션 | **해시를 사용한 범위 파티션** |
+| ------------------- | ------------------------------- | --------------------------------- | ------------------------------- | ----------------------------- |
+| 테이블스페이스 변경 | ○                               | ○                                 | ○                               | ○                             |
+| 추가                | △ ( 조건부 가능 )               | X                                 | ○                               | X                             |
+| 병합                | X                               | X                                 | ○                               | X                             |
+| 삭제                | ○                               | ○                                 | X                               | ○                             |
+| 합병                | ○                               | ○                                 | X                               | ○                             |
+| 이름 변경           | ○                               | ○                                 | ○                               | ○                             |
+| 분할                | ○                               | ○                                 | X                               | ○                             |
+| 레코드 삭제         | ○                               | ○                                 | ○                               | ○                             |
 
 [표 3‑1] 파티셔닝 방법에 따른 지원 연산
 
@@ -6443,21 +6443,14 @@ JOB에 대한 설명을 기술할 수 있다.
 
 아래는 JOB을 사용하는 관리자가 염두에 두어야 할 사항들이다.
 
-- 입출력 모드가 OUT 또는 INOUT인 인자를 가진 저장 프로시저는 JOB에 등록될 수
-  없다.
-- 작업 스케줄러에 의해 JOB이 실행되려면 JOB_SCHEDULER_ENABLE 프로퍼티가
-  1이어야 하며, JOB_THREAD_COUNT 프로퍼티가 0보다 커야 한다.
-- JOB으로 수행되는 프로시저에서 오류가 발생하는 경우, QP_MSGLOG_FILE
-  프로퍼티에 설정된 트레이스 로그 파일(기본:
-  \$ALTIBASE_HOME/trc/altibase_qp.log)로 에러 메시지 등의 로그가 저장된다.
-- 프로시저 내에 SYSTEM_.PRINTLN 같은 출력 함수가 사용된 경우, QP_MSGLOG_FILE
-  프로퍼티에 설정된 트레이스 로그 파일(기본:
-  \$ALTIBASE_HOME/trc/altibase_qp.log)로 출력 내용이 기록된다.
+- 입출력 모드가 OUT 또는 INOUT인 인자를 가진 저장 프로시저는 JOB에 등록될 수 없다.
+- 작업 스케줄러가 JOB을 실행하려면 JOB_SCHEDULER_ENABLE 프로퍼티가 1이고 JOB_THREAD_COUNT 프로퍼티 값이 0보다 커야 한다.
+- JOB에서 수행한 프로시저에서 오류가 발생한 경우, JOB_MSGLOG_FILE 프로퍼티에 설정한 트레이스 로그 파일(기본: $ALTIBASE_HOME/trc/altibase_job.log)에 에러 메시지 등의 로그를 기록한다.
+- 프로시저에서 SYSTEM_.PRINTLN 같은 출력 함수를 사용한 경우, JOB_MSGLOG_FILE 프로퍼티에 설정한 트레이스 로그 파일(기본: $ALTIBASE_HOME/trc/altibase_job.log)에 출력 내용을 기록한다.
 
 #### 예제
 
-\<질의\> 현재부터 시작되어 한 달에 한 번 주기로 proc1 프로시저를 실행하는 job1을
-생성하라 (job1의 상태는 DISABLE이다).
+\<질의\> 현재부터 시작되어 한 달에 한 번 주기로 proc1 프로시저를 실행하는 job1을 생성하라 (job1의 상태는 DISABLE이다).
 
 ```
 iSQL> CREATE JOB job1 EXEC proc1 START sysdate INTERVAL 1 MONTH;
@@ -7810,10 +7803,7 @@ Altibase는 세션에 바인딩 된 임시 테이블을 truncate 한다.
 
 *range_partitioning*
 
-범위 파티션드 테이블 생성시 파티션 키 값의 범위를 명시하는 절이다. 주로 DATE
-자료형에 많이 사용된다. 사용자가 지정한 값을 기준으로 테이블이 분할되기 때문에,
-파티션별로 데이터의 고른 분포는 보장되지 않는다. 각 파티션의 범위는 그 범위의
-최대값을 설정함으로써 결정된다.
+범위 파티션드 테이블 생성시 파티션 키 값의 범위를 명시하는 절이다. 주로 DATE 자료형에 많이 사용된다. 사용자가 지정한 값을 기준으로 테이블이 분할되기 때문에, 파티션별로 데이터의 고른 분포는 보장되지 않는다. 각 파티션의 범위는 그 범위의 최대값을 설정함으로써 결정된다.
 
 명시된 범위 외의 모든 값과 NULL은 기본 파티션(default partition)에 속하게 된다.
 여러 칼럼들의 조합으로 파티션 키를 정의할 수 있다.
@@ -7821,36 +7811,42 @@ Altibase는 세션에 바인딩 된 임시 테이블을 truncate 한다.
 범위 파티션드 테이블 생성시 기본 파티션 절은 생략할 수 있다.
 기본 파티션 절이 생략된 경우에만 ALTER TABLE ADD PARTITION 구문을 사용할 수 있다.
 
-> 주의 : 
->
-> - 기본 파티션을 추가 또는 삭제할 수 없습니다. 즉, ATLER TABLE ADD , DROP PARTITION 구문을 지원하지 않습니다. 범위 파티션테이블을 생성시 주의해야한다.
->
-> - 파티션 키 컬럼의 값으로 NULL을 삽입해야 하는 경우 기본파티션이 반드시 있어야한다.
->
-> - 기본 파티션이 없는 경우  CONJOIN/DISJOIN 구문을 지원하지 않습니다.
+###### 범위 파티션드 테이블 생성 시 주의 사항
 
-> 참고 : 기본 파티션 절을 생략한 경우 SYS_TABLE_PARTITIONS_에 이름이 ""(NULL)인 파티션이 생성된다.
+- 기본 파티션이 없는 범위 파티션드 테이블을 생성할 수 있다.
+- 범위 파티션드 객체에서 파티션 추가는 기본 파티션이 없는 범위 파티션드 테이블에서만 사용할 수 있다.
+- 기본 파티션이 없는 범위 파티션드 테이블은 기본 파티션 추가 연산을 수행할 수 없다.
+- 기본 파티션이 있는 범위 파티션드 테이블은 기본 파티션 삭제 연산을 수행할 수 없다.
+- 기본 파티션이 없는 범위 파티션드 테이블은 CONJOIN/DISJOIN 구문을 사용할 수 없다.
+- 범위 파티션드 테이블이 이중화 대상 테이블인 경우 파티션 추가 연산을 수행할 수 없다.
+
+> 기본 파티션이 없는 범위 파티션드 테이블을 생성하면 SYS_TABLE_PARTITIONS_에서 PARTITION_NAME 이 없는 파티션이 추가로 생성된다.
 >
-> ```
-> CREATE TABLE t1 ( i1 INT, i2 INT)
-> PARTITION BY RANGE ( i1 )
-> ( PARTITION p1 VALUES LESS THAN (10),
->   PARTITION p2 VALUES LESS THAN (20)
-> );
+> ```sql
+> iSQL> CREATE TABLE t1 
+>       ( 
+>         i1 INT, 
+>         i2 INT
+>       ) 
+>       PARTITION BY RANGE ( i1 ) 
+>       ( 
+>         PARTITION p1 VALUES LESS THAN (10), 
+>         PARTITION p2 VALUES LESS THAN (20) 
+>       );
 > 
-> SELECT PARTITION_NAME as p_name
->  , PARTITION_MIN_VALUE as min
->  , PARTITION_MAX_VALUE as max
-> FROM SYSTEM_.SYS_TABLES_ T,
->  SYSTEM_.SYS_TABLE_PARTITIONS_ p
-> WHERE T.USER_ID = 2 
->  AND T.TABLE_NAME = 'T1'
->  AND T.TABLE_ID = P.TABLE_ID;
-> P_NAME  MIN     MAX
-> ----------------------------
-> P1              10
-> P2      10      20
->         20
+> iSQL> SELECT PARTITION_NAME as p_name
+>            , PARTITION_MIN_VALUE as min
+>            , PARTITION_MAX_VALUE as max
+>         FROM SYSTEM_.SYS_TABLES_ T
+>            , SYSTEM_.SYS_TABLE_PARTITIONS_ p
+>        WHERE T.USER_ID = 2 
+>          AND T.TABLE_NAME = 'T1'
+>          AND T.TABLE_ID = P.TABLE_ID;
+> P_NAME      MIN         MAX         
+> ----------------------------------------
+> P1                      10          
+> P2          10          20          
+>             20                      
 > 3 rows selected.
 > ```
 
@@ -8563,10 +8559,10 @@ PARTITION BY RANGE_USING_HASH (product_id)
 	PARTITION p3 VALUES LESS THAN (750),
   	PARTITION p4 VALUES DEFAULT
   ) TABLESPACE SYS_TBS_DISK_DATA;
-  ```
+```
+
   
-  
-  
+
 - 세그먼트 내의 익스텐트 관리 파라미터를 지정한 테이블 생성
 
   \<질의\> 디스크 테이블스페이스인 usertbs에 local_tbl 테이블을 생성한다. 단
@@ -8589,7 +8585,6 @@ PARTITION BY RANGE_USING_HASH (product_id)
                       STORAGE ( INITEXTENTS 3 MINEXTENTS 3 MAXEXTENTS 100 );
   Create success.
   ```
-
 
 
 
