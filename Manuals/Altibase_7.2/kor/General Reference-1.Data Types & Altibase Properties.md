@@ -18,7 +18,7 @@
     - [프로퍼티 요약](#%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0-%EC%9A%94%EC%95%BD)
     - [데이터베이스 초기화 프로퍼티](#%EB%8D%B0%EC%9D%B4%ED%84%B0%EB%B2%A0%EC%9D%B4%EC%8A%A4-%EC%B4%88%EA%B8%B0%ED%99%94-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
     - [성능 관련 프로퍼티](#%EC%84%B1%EB%8A%A5-%EA%B4%80%EB%A0%A8-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
-    
+
     - [세션 관련 프로퍼티](#%EC%84%B8%EC%85%98-%EA%B4%80%EB%A0%A8-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
     - [타임아웃 관련 프로퍼티](#%ED%83%80%EC%9E%84%EC%95%84%EC%9B%83-%EA%B4%80%EB%A0%A8-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
     - [트랜잭션 관련 프로퍼티](#%ED%8A%B8%EB%9E%9C%EC%9E%AD%EC%85%98-%EA%B4%80%EB%A0%A8-%ED%94%84%EB%A1%9C%ED%8D%BC%ED%8B%B0)
@@ -178,10 +178,10 @@ Altibase에서 지원하는 데이타형은 다음과 같다.
 | M: 정의된 칼럼 길이 L: 입력 문자열의 길이 |                              |                                                              |
 | ----------------------------------------- | ---------------------------- | ------------------------------------------------------------ |
 | 타 입                                     | Length                       | Size                                                         |
-| CHAR(M)                                   | 1 ~ 32000                    | M + 2                                                        |
-| VARCHAR(M)                                | 1 ~ 32000                    | length + 2, 여기서 입력 값이 가변영역에 저장되면, length = L 입력 값이 고정영역에 저장되면, length = M |
-| NCHAR(M)                                  | 1~16000(UTF16) 1~10666(UTF8) | M*2 + 2(UTF16) M*3 + 2(UTF8)                                 |
-| NVARCHAR(M)                               | 1~16000(UTF16) 1~10666(UTF8) | length*2 + 2(UTF16) length*3 + 2(UTF8) 여기서: 입력 값이 가변영역에 저장되면, length = L 입력 값이 고정영역에 저장되면, length = M |
+| CHAR(M)                                   | 0 ~ 32000                    | M + 2                                                        |
+| VARCHAR(M)                                | 0 ~ 32000                    | length + 2, 여기서 입력 값이 가변영역에 저장되면, length = L 입력 값이 고정영역에 저장되면, length = M |
+| NCHAR(M)                                  | 0~16000(UTF16) 0~10666(UTF8) | M*2 + 2(UTF16) M*3 + 2(UTF8)                                 |
+| NVARCHAR(M)                               | 0~16000(UTF16) 0~10666(UTF8) | length*2 + 2(UTF16) length*3 + 2(UTF8) 여기서: 입력 값이 가변영역에 저장되면, length = L 입력 값이 고정영역에 저장되면, length = M |
 
 NCHAR와 NVARCHAR는 유니코드 문자형 타입이다. UTF16으로 인코딩된 문자열의 최대 길이는 UTF8로 인코딩된 문자열의 최대 길이와 다르다.
 
@@ -190,16 +190,16 @@ NCHAR와 NVARCHAR는 유니코드 문자형 타입이다. UTF16으로 인코딩�
 | Non-native   | 타 입               | Precision   | Scale               | Size (bytes)                                                 | 비 고 |
 | ------------ | ------------------- | ----------- | ------------------- | ------------------------------------------------------------ | ----- |
 | NUMERIC      | 38                  | 0           | 3+((precision)+2)/2 | *고정 소수점 숫자 *DECIMAL은 NUMERIC과 동일한 데이터 타입이다. |       |
-| NUMERIC(p)   | 1 ~ 38              | 0           |                     |                                                              |       |
-| NUMERIC(p,s) | 1 ~ 38              | -84 ~ 128   |                     |                                                              |       |
+| NUMERIC(p)   | 0 ~ 38              | 0           |                     |                                                              |       |
+| NUMERIC(p,s) | 0 ~ 38              | -84 ~ 128   |                     |                                                              |       |
 | DECIMAL      | 38                  | 0           |                     |                                                              |       |
-| DECIMAL(p)   | 1 ~ 38              | 0           |                     |                                                              |       |
-| DECIMAL(p,s) | 1 ~ 38              | -84 ~ 128   |                     |                                                              |       |
-| NUMBER(p)    | 1 ~ 38              | 0           |                     |                                                              |       |
-| NUMBER(p,s)  | 1 ~ 38              | -84 ~ 128   |                     |                                                              |       |
+| DECIMAL(p)   | 0 ~ 38              | 0           |                     |                                                              |       |
+| DECIMAL(p,s) | 0 ~ 38              | -84 ~ 128   |                     |                                                              |       |
+| NUMBER(p)    | 0 ~ 38              | 0           |                     |                                                              |       |
+| NUMBER(p,s)  | 0 ~ 38              | -84 ~ 128   |                     |                                                              |       |
 | NUMBER       | 38                  | X           | 3+((precision)+2)/2 | *부동 소수점 숫자                                            |       |
 | FLOAT        | 38                  | X           |                     |                                                              |       |
-| FLOAT(p)     | 1 ~ 38              | X           |                     |                                                              |       |
+| FLOAT(p)     | 0 ~ 38              | X           |                     |                                                              |       |
 | Native       | 타입                | 호환 C Type | Size(bytes)         | 비고                                                         |       |
 | DOUBLE       | double              | 8           | *부동 소수점 숫자   |                                                              |       |
 | REAL         | float               | 4           |                     |                                                              |       |
@@ -220,7 +220,7 @@ NCHAR와 NVARCHAR는 유니코드 문자형 타입이다. UTF16으로 인코딩�
 
 - NUMERIC(p, s)  
   NUMERIC(10, 9): 크기 = 3 + 12/2 = 9 bytes
-  
+
 - DECIMAL: NUMERIC과 동일
 
 - DECIMAL(p): NUMERIC(p)과 동일
@@ -237,10 +237,10 @@ NCHAR와 NVARCHAR는 유니코드 문자형 타입이다. UTF16으로 인코딩�
 ```
 - FLOAT  
   FLOAT(38): 크기 = 3 + 40/2 = 23 bytes
-  
+
 - FLOAT(p)  
   FLOAT(20): 크기 = 3 + 22/2 = 14 bytes
-  
+
 - NUMBER: FLOAT과 동일
 ```
 
@@ -265,26 +265,26 @@ NCHAR와 NVARCHAR는 유니코드 문자형 타입이다. UTF16으로 인코딩�
     <tr>
     	<td>BLOB/CLOB</td>
         <td></td>
-        <td>1~4294967295</td>
+        <td>0~4294967295</td>
     </tr>
     <tr>
     	<td>BYTE</td>
-        <td>1~32000</td>
+        <td>0~32000</td>
         <td>M + 2</td>
     </tr>
      <tr>
     	<td>NIBBLE</td>
-        <td>1~254</td>
+        <td>0~254</td>
         <td>M/2 + 1</td>
     </tr>
      <tr>
     	<td>BIT</td>
-        <td>1~64000</td>
+        <td>0~64000</td>
         <td>M/8 + 4</td>
     </tr>
     <tr>
     	<td>VARBIT</td>
-        <td>1~64000</td>
+        <td>0~64000</td>
         <td>length/8 + 4, 여기서
 입력 값이 가변영역에 저장되면, length = L
 입력 값이 고정영역에 저장되면, length = M
@@ -679,7 +679,7 @@ FLOAT [(precision)]
 
 ##### 설명
 
--1E+120에서 1E+120까지 내의 부동 소수점 숫자 데이터 타입이다.
+-1E-120에서 1E+120까지 내의 부동 소수점 숫자 데이터 타입이다.
 
 *Precision*은 정밀도 표시하기 위해 부동 소수점 숫자의 가수를 유효숫자 표기법으로 저장하는 데 사용되는 유효숫자의 자릿수이다.
 
@@ -814,7 +814,7 @@ TO_CHAR (1234, '99,99')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '12,34', '99,99') FROM dual;
-TO_NUMBER ( '12,34', '99,99') 
+TO_NUMBER ( '12,34', '99,99')
 --------------------------------
 1234        
 1 row selected.
@@ -840,7 +840,7 @@ TO_CHAR (1.234, '99.999')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '1.234', '99.999') FROM dual;
-TO_NUMBER ( '1.234', '99.999') 
+TO_NUMBER ( '1.234', '99.999')
 ---------------------------------
 1.234       
 1 row selected.
@@ -862,7 +862,7 @@ TO_CHAR (123, '$9999')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '$0123', '09$99') FROM dual;
-TO_NUMBER ( '$0123', '09$99') 
+TO_NUMBER ( '$0123', '09$99')
 --------------------------------
 123         
 1 row selected.
@@ -926,12 +926,12 @@ TO_CHAR (1234.578, '999.99999')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '123', '99999') FROM dual;
-TO_NUMBER ( '123', '99999') 
+TO_NUMBER ( '123', '99999')
 ------------------------------
 123         
 1 row selected.
 iSQL> SELECT TO_NUMBER ( '1234.58', '9999.99') FROM dual;
-TO_NUMBER ( '1234.58', '9999.99') 
+TO_NUMBER ( '1234.58', '9999.99')
 ------------------------------------
 1234.58     
 1 row selected.
@@ -970,7 +970,7 @@ TO_CHAR(00123.100,'FM99999.999')
 iSQL> SELECT TO_CHAR (0.4, 'B9') FROM T1;
 TO_CHAR (0.4, 'B9')  
 -----------------------
-                 
+
 1 row selected.
 ```
 
@@ -1090,7 +1090,7 @@ TO_CHAR (-123, '999MI')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '123-', '999MI') FROM dual;
-TO_NUMBER ( '123-', '999MI') 
+TO_NUMBER ( '123-', '999MI')
 -------------------------------
 -123        
 1 row selected.
@@ -1117,7 +1117,7 @@ TO_CHAR (-123, '999PR')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '<123>', '999PR') FROM dual;
-TO_NUMBER ( '<123>', '999PR') 
+TO_NUMBER ( '<123>', '999PR')
 --------------------------------
 -123        
 1 row selected.
@@ -1169,13 +1169,13 @@ TO_CHAR (-123, '999.99S')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '+123', 'S999.99') FROM dual;
-TO_NUMBER ( '+123', 'S999.99') 
+TO_NUMBER ( '+123', 'S999.99')
 ---------------------------------
 123         
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ( '123.00-', '999.99S') FROM dual;
-TO_NUMBER ( '123.00-', '999.99S') 
+TO_NUMBER ( '123.00-', '999.99S')
 ------------------------------------
 -123        
 1 row selected.
@@ -1233,7 +1233,7 @@ TO_CHAR (123, 'XXXX')
 1 row selected.
 
 iSQL> SELECT TO_NUMBER ('ABC', 'XXXX') FROM dual;
-TO_NUMBER ('ABC', 'XXXX') 
+TO_NUMBER ('ABC', 'XXXX')
 ----------------------------
 2748        
 1 row selected.
@@ -1309,7 +1309,7 @@ PM
 1 row selected.
 
 iSQL> SELECT TO_DATE('1980-12-28 PM', 'YYYY-MM-DD AM') FROM dual;
-TO_DATE('1980-12-28 PM', 'YYYY-MM-DD AM' 
+TO_DATE('1980-12-28 PM', 'YYYY-MM-DD AM'
 -------------------------------------------
 1980/12/28 12:00:00  
 1 row selected.
@@ -1337,13 +1337,13 @@ TO_DATE 함수에서는 인자로 사용할 수 없다.
 iSQL> SELECT TO_CHAR ( '28-DEC-1980', 'SCC' ) FROM dual;
 TO_CHAR ( '28-DEC-1980', 'SCC' )  
 ------------------------------------
- 20 
+ 20
 1 row selected.
 
 iSQL> SELECT TO_CHAR ( DATE'01-JAN-0001' - 1, 'SCC' ) FROM dual;
 TO_CHAR ( DATE'01-JAN-0001' - 1, 'SCC' )  
 --------------------------------------------
--01 
+-01
 1 row selected.
 ```
 
@@ -1420,7 +1420,7 @@ TO_CHAR ( '28-DEC-1980', 'DD' )
 1 row selected.
 
 iSQL> SELECT TO_DATE( '1980-12-28', 'YYYY-MM-DD') FROM dual;
-TO_DATE( '1980-12-28', 'YYYY-MM-DD') 
+TO_DATE( '1980-12-28', 'YYYY-MM-DD')
 ---------------------------------------
 1980/12/28 00:00:00  
 1 row selected.
@@ -1540,7 +1540,7 @@ TO_CHAR ( TO_DATE( '1980-12-28 17:30:29'
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD HH:MI:SS' ) FROM dual;
-TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD 
+TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD
 -------------------------------------------
 2005/12/28 14:30:29  
 1 row selected.
@@ -1562,7 +1562,7 @@ TO_CHAR ( TO_DATE( '1980-12-28 17:30:29'
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD HH:MI:SS' ) FROM dual;
-TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD 
+TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD
 -------------------------------------------
 2005/12/28 14:30:29  
 1 row selected.
@@ -1599,7 +1599,7 @@ December
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '05-APRIL-28 14:30:29', 'RR-MONTH-DD HH:MI:SS' ) FROM dual;
-TO_DATE ( '05-APRIL-28 14:30:29', 'RR-MO 
+TO_DATE ( '05-APRIL-28 14:30:29', 'RR-MO
 -------------------------------------------
 2005/04/28 14:30:29  
 1 row selected.
@@ -1639,7 +1639,7 @@ XII
 1 row selected.
 
 iSQL> SELECT TO_DATE ('28-V-1980', 'DD-RM-YYYY') FROM dual;
-TO_DATE ('28-V-1980', 'DD-RM-YYYY') 
+TO_DATE ('28-V-1980', 'DD-RM-YYYY')
 --------------------------------------
 1980/05/28 00:00:00  
 1 row selected.
@@ -1661,7 +1661,7 @@ TO_CHAR ( '28-DEC-80', 'RR' )
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '28-DEC-80', 'DD-MON-RR' ) FROM dual;
-TO_DATE ( '28-DEC-80', 'DD-MON-RR' ) 
+TO_DATE ( '28-DEC-80', 'DD-MON-RR' )
 ---------------------------------------
 1980/12/28 00:00:00  
 1 row selected.
@@ -1707,7 +1707,7 @@ TO_CHAR ( TO_DATE( '1980-12-28 17:30:29'
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD HH:MI:SS' ) FROM dual;
-TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD 
+TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD
 -------------------------------------------
 2005/12/28 14:30:29  
 1 row selected.
@@ -1717,7 +1717,7 @@ TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD
 
 ###### 설명
 
-지난 부터 몇 초가 경과 되었는지 나타낸다. (0 ~ 86399)
+자정부터 현재까지 몇 초가 경과 되었는지 나타낸다. (0 ~ 86399)
 
 ###### 예제
 
@@ -1725,7 +1725,7 @@ TO_DATE ( '05-12-28 14:30:29', 'RR-MM-DD
 iSQL> SELECT TO_CHAR ( TO_DATE( '1980-12-28 17:30:29', 'YYYY-MM-DD HH24:MI:SS' ), 'SSSSS' ) FROM dual;
 TO_CHAR ( TO_DATE( '1980-12-28 17:30:29'  
 --------------------------------------------
-62940            
+63029          
 1 row selected.
 
 iSQL> SELECT TO_DATE('1980-12-28 12345', 'YYYY-MM-DD SSSSS') FROM dual;
@@ -1773,7 +1773,7 @@ TO_CHAR (SYSDATE, 'SSSSSSSS')
 1 row selected.  
 
 iSQL> SELECT TO_DATE ( '12.345678', 'SS.SSSSSS') FROM dual;
-TO_DATE ( '12.345678', 'SS.SSSSSS') 
+TO_DATE ( '12.345678', 'SS.SSSSSS')
 --------------------------------------
 2005/12/01 00:00:12  
 1 row selected.
@@ -1900,7 +1900,7 @@ TO_CHAR ( '28-DEC-1980', 'SYYYY' )
 iSQL> SELECT TO_CHAR ( DATE'01-JAN-0000' - 1, 'SYYYY-MM-DD' ) FROM dual;
 TO_CHAR ( DATE'01-JAN-0000' - 1, 'SYYYY-MM  
 ----------------------------------------------
--0001-12-31 
+-0001-12-31
 1 row selected.
 ```
 
@@ -1920,7 +1920,7 @@ TO_CHAR ( '28-DEC-1980', 'YYYY' )
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '28-DEC-1980', 'DD-MON-YYYY' ) FROM dual;
-TO_DATE ( '28-DEC-1980', 'DD-MON-YYYY' ) 
+TO_DATE ( '28-DEC-1980', 'DD-MON-YYYY' )
 -------------------------------------------
 1980/12/28 00:00:00  
 1 row selected.
@@ -1942,7 +1942,7 @@ TO_CHAR ( '28-DEC-1980', 'YY' )
 1 row selected.
 
 iSQL> SELECT TO_DATE ( '28-DEC-80', 'DD-MON-YY' ) FROM dual;
-TO_DATE ( '28-DEC-80', 'DD-MON-YY' ) 
+TO_DATE ( '28-DEC-80', 'DD-MON-YY' )
 ---------------------------------------
 2080/12/28 00:00:00  
 1 row selected.
@@ -1984,12 +1984,6 @@ DATE_FORMAT
 - [YY]: 2000 + YY
 
 ‘23-FEB-5’ :
-
-‘23-FEB-05’ :
-
-‘23-FEB-2005’: 에러
-
-‘23-FEB-95’ :
 
 ‘23-FEB-05’ :
 
@@ -2254,7 +2248,7 @@ iSQL> INSERT INTO T1 VALUES ( VARBIT'1', VARBIT'1234' );
 
 #### 개요
 
-LOB(Large Object) 데이터 타입은 대용량 데이타를 저장할 수 있는 데이타 타입이다. 하나의 LOB칼럼에 저장 가능한 데이타의 크기는 최대 2G이다. 테이블을 생성할 때 다른 타입들과 달리 사용자가 LOB 칼럼의 크기를 명시할 필요가 없다. 그리고 하나의 테이블에 하나 이상의 LOB 타입 칼럼을 정의할 수 있다.
+LOB(Large Object) 데이터 타입은 대용량 데이타를 저장할 수 있는 데이타 타입이다. 하나의 LOB칼럼에 저장 가능한 데이타의 크기는 최대 4GB-1bye 이다. 테이블을 생성할 때 다른 타입들과 달리 사용자가 LOB 칼럼의 크기를 명시할 필요가 없다. 그리고 하나의 테이블에 하나 이상의 LOB 타입 칼럼을 정의할 수 있다.
 
 LOB 데이타 타입은 이미지, 동영상 파일들과 같은 이진 데이타를 저장하는 BLOB(Binary Large Object)과 문자열 데이타를 저장하는 CLOB(Character Large Object)으로 구분된다.
 
@@ -2318,7 +2312,7 @@ CLOB [ VARIABLE ( IN ROW size ) ]
 
 ##### 설명
 
-CLOB은 문자형 대용량 데이타를 저장하기 위한 문자형 데이타 타입으로, 4GB-1bye 크기 크기까지 저장 가능하다.
+CLOB은 문자형 대용량 데이타를 저장하기 위한 문자형 데이타 타입으로, 4GB-1bye 크기까지 저장 가능하다.
 
 FIXED 와 VARIABLE 절에 대한 자세한 설명은 앞서 기술한 “FIXED/VARIABLE 옵션”과 “IN ROW 절”을 참고한다.
 
@@ -14331,7 +14325,7 @@ ACCESS_LIST = operation, address, mask, [limit]
 ##### 검사 규칙
 
 ```
-IF 
+IF
 BITXOR(BITAND(IP_패킷,mask), BITAND(address,mask)) = 0
 THEN  일치
 ELSE  불일치
